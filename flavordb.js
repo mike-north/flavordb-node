@@ -17,9 +17,7 @@
 		ProductCategory = fdb_models.ProductCategory;
 
 	var OAUTH_URL = "http://www.flavordb.com/oauth/token",
-		API_ENDPOINT = "http://api.flavordb.com/api/v1",
-		API_KEY = process.env['FLAVORDB_API_KEY'],
-		API_SECRET = process.env['FLAVORDB_API_SECRET'];
+		API_ENDPOINT = "http://api.flavordb.com/api/v1";
 
 	var logger = new (winston.Logger)({
 	    transports: [
@@ -30,35 +28,36 @@
 	function FlavordbClient (opts) {
 
 		var options = opts || {};
-		this.api_token = null;
+		
+		var api_token = null;
 
 
-		this.api_key = options.api_key || API_KEY;
-		this.api_secret = options.api_secret || API_SECRET;
+		var api_key = options.api_key || process.env['FLAVORDB_API_KEY'];
+		var api_secret = options.api_secret || process.env['FLAVORDB_API_SECRET'];
 
 		logger.warn("API Credentials Found", {
-			key: this.api_key.substring(0, 20) + '...',
-			secret: this.api_secret.substring(0, 20) + '...'
+			key: api_key.substring(0, 20) + '...',
+			secret: api_secret.substring(0, 20) + '...'
 		});
 
-		this.getOAuthAccessToken = function () {
+		function getOAuthAccessToken () {
 			var deferred = Q.defer();
 			
 
 
-			if(this.api_key == null || this.api_secret == null) {
+			if(api_key == null || api_secret == null) {
 				deferred.reject(new Error("API Credentials are missing!\n\t" + API_KEY));
 			}
 			
 			if (false) {
-				deferred.resolve(this.api_token);
+				deferred.resolve(api_token);
 			}
 			else {
 				logger.info("Getting OAuth Token...");
 				restler.post(OAUTH_URL, {
 					data: {
-						client_id: this.api_key,
-						client_secret: this.api_secret,
+						client_id: api_key,
+						client_secret: api_secret,
 						grant_type: 'client_credentials'
 					}
 				}).once("complete", function (data, response) {
@@ -66,9 +65,9 @@
 						deferred.reject(new InvalidAPICredentialsError(data['error_description']));
 					}
 					else {
-						this.api_token = data['access_token'];
-						logger.info("received API token \t" + this.api_token);
-						deferred.resolve(this.api_token);	
+						api_token = data['access_token'];
+						logger.info("received API token \t" + api_token);
+						deferred.resolve(api_token);	
 					}
 				}).once("fail", function (data, response) {
 					deferred.reject(new Error("Failed to get OAuth token"));
@@ -76,37 +75,37 @@
 			}
 			return deferred.promise;	
 		};
+
+		this.getResourceByURI = function (uri, args) {
+			var deferred = Q.defer();
+
+			var search_args = args || {};
+
+			var resourceUrl = /^http:\/\//.test(uri) ? uri : (API_ENDPOINT + uri);
+
+			getOAuthAccessToken().then(
+				function (token) {
+					logger.info("GET", {url: resourceUrl});
+					restler.get(resourceUrl, {
+					
+						data: U.extend({ access_token: token}, search_args)
+					
+					}).once("complete", function (api_data, response) {
+						deferred.resolve(api_data.data);
+					}).once("fail", function (api_data, response) {
+						deferred.reject(new APIError("Couldn't retrieve object at url '" + resourceUrl + "'"));
+					});
+				},
+				function (error) {
+					deferred.reject(error);
+				}
+			);
+
+			return deferred.promise;
+		};
 	}
 	
 	FlavordbClient.prototype = new Object;
-
-	FlavordbClient.prototype.getResourceByURI = function (uri, args) {
-		var deferred = Q.defer();
-
-		var search_args = args || {};
-
-		var resourceUrl = /^http:\/\//.test(uri) ? uri : (API_ENDPOINT + uri);
-
-		this.getOAuthAccessToken().then(
-			function (token) {
-				logger.info("GET", {url: resourceUrl});
-				restler.get(resourceUrl, {
-				
-					data: U.extend({ access_token: token}, search_args)
-				
-				}).once("complete", function (api_data, response) {
-					deferred.resolve(api_data.data);
-				}).once("fail", function (api_data, response) {
-					deferred.reject(new APIError("Couldn't retrieve object at url '" + resourceUrl + "'"));
-				});
-			},
-			function (error) {
-				deferred.reject(error);
-			}
-		);
-
-		return deferred.promise;
-	};
 
 	FlavordbClient.prototype.getProductCategoryById = function (id) {
 		var deferred = Q.defer();
