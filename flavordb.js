@@ -44,7 +44,7 @@
 			var deferred = Q.defer();
 
 			if(api_key == null || api_secret == null) {
-				deferred.reject(new Error("API Credentials are missing!\n\t");
+				deferred.reject(new Error("API Credentials are missing!\n\t"));
 			}
 			
 			if (false) {
