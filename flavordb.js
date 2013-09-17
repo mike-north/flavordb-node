@@ -35,7 +35,7 @@
 		var api_key = options.api_key || process.env['FLAVORDB_API_KEY'];
 		var api_secret = options.api_secret || process.env['FLAVORDB_API_SECRET'];
 
-		logger.warn("API Credentials Found", {
+		logger.info("API Credentials Found", {
 			key: api_key ? (api_key.substring(0, 20) + '...') : '--NO VALUE-',
 			secret: api_secret ? (api_secret.substring(0, 20) + '...') : '--NO VALUE-'
 		});
