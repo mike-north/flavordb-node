@@ -1,0 +1,46 @@
+{
+  "name": "flavordb",
+  "version": "0.0.1",
+  "description": "A NodeJS client for the FlavorDB API",
+  "main": "flavordb.js",
+  "directories": {
+    "test": "tests"
+  },
+  "dependencies": {
+    "restler" : "",
+    "underscore": "",
+    "q": "",
+    "winston": ""
+  },
+  "devDependencies": {
+  	"jake": "~0.6.12",
+    "mocha": "~1.13.0",
+    "yuicompressor": "~2.4.8"
+  },
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/TrueNorth/flavordb-node.git"
+  },
+  "scripts": {
+    "test": "mocha"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/TrueNorth/flavordb-node"
+  },
+  "keywords": [
+    "flavordb",
+    "beer",
+    "wine",
+    "whiskey",
+    "drinking"
+  ],
+  "author": {
+  	"name": "Mike North",
+  	"email": "michael.north@truenorthapps.com"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/TrueNorth/flavordb-node/issues"
+  }
+}
