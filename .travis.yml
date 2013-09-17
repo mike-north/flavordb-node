@@ -1,10 +1,10 @@
 language: node_js
 node_js:
-  - "0.11"
-  - "0.10"
-  - "0.8"
-  - "0.6"
+- '0.11'
+- '0.10'
+- '0.8'
+- '0.6'
 env:
-  global:
-    - secure: tklYdNk9OVh9usXyyPlpsw7srJ+u9Py1Hyqv7YsB9iu5YfImXDE7xwiTTx42eI/MEyVzNFb5CLYYECrDB9e89u8yTnrsaPfvINf2feMrkk/q4wVIa/zt/fD/v5oucAvZ41E04YJBw+Kr/gQiEiZiwV8iQTRDnRBBFzXFR7i/Ye8=
-    - secure: KqKfLVlg+yos3AVEeuvnk5UKY3SuF02nFHpll7KL1UXVoshLgTsTSdhNqaguJ7v8NyHUOqgoHI3WwM2QQQ2UMOsBhb933J9Y4nqWXM25ig2sjfJtLaACc5edmY09VU80GMMq29X5j9ikw4VCoE1tl5Yts0JZH0ks8z1Q1pXNDnc=
+  matrix:
+  - secure: gXNZa645VKuxHAVCTxUIvLsPsLkRtEwKvlfaUYZf5owqNKWf5M5cOsZC4FDImn3Da1bwal7Hoxe+go+ed6EuUVY/K/mcBxieeQVeAT5IvM0kCZ10g5n4AF4zM2IJIWHVIyJoN3ExOjkbrJr8EeBgE4Wue1oDOK1NlBDz8Hu9n44=
+  - secure: RGYpAW2tvzsbrHhEFm+focI6vzcKjO9d4/lbn/1JNURwYYthxTFM2OgFBYGFoyokYoIFskJjJdnRujehZHm+XluULf08iOgQAfD6euZA/23pS7jh9bZIkVMrKzm1Or7JmrHlbWP8JyMbNPs7WQzicVgTnvaFRy9ZEm0D3MQ+aZg=
