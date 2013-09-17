@@ -23,7 +23,7 @@
 
 	var logger = new (winston.Logger)({
 	    transports: [
-	      new (winston.transports.Console)({ level: 'info' })
+	      new (winston.transports.Console)({ level: 'warn' })
 	    ]
 	});
 	
@@ -63,8 +63,10 @@
 	
 	FlavordbClient.prototype = new Object;
 
-	FlavordbClient.prototype.getResourceByURI = function (uri) {
+	FlavordbClient.prototype.getResourceByURI = function (uri, args) {
 		var deferred = Q.defer();
+
+		var search_args = args || {};
 
 		var resourceUrl = /^http:\/\//.test(uri) ? uri : (API_ENDPOINT + uri);
 
@@ -72,9 +74,9 @@
 			function (token) {
 				logger.info("GET", {url: resourceUrl});
 				restler.get(resourceUrl, {
-					data: {
-						access_token: token
-					}
+				
+					data: U.extend({ access_token: token}, search_args)
+				
 				}).once("complete", function (api_data, response) {
 					deferred.resolve(api_data.data);
 				}).once("fail", function (api_data, response) {
@@ -123,6 +125,57 @@
 			function (data) {
 				var business = new Business(data);
 				deferred.resolve(business);
+			},
+			function (error) {
+				logger.error(error.toString());
+				deferred.reject(error);
+			});
+		return deferred.promise;
+	};
+
+	FlavordbClient.prototype.findBusinesses = function (search_params) {
+		var deferred = Q.defer();
+		this.getResourceByURI("/businesses", search_params).then(
+			function (data) {
+				var businesses = [];
+				for (var i in data) {
+					businesses.push(new Business(data[i]));
+				}
+				deferred.resolve(businesses);
+			},
+			function (error) {
+				logger.error(error.toString());
+				deferred.reject(error);
+			});
+		return deferred.promise;
+	};
+
+	FlavordbClient.prototype.findProducts = function (search_params) {
+		var deferred = Q.defer();
+		this.getResourceByURI("/products", search_params).then(
+			function (data) {
+				var products = [];
+				for (var i in data) {
+					products.push(new Product(data[i]));
+				}
+				deferred.resolve(products);
+			},
+			function (error) {
+				logger.error(error.toString());
+				deferred.reject(error);
+			});
+		return deferred.promise;
+	};
+
+	FlavordbClient.prototype.findProductCategories = function (search_params) {
+		var deferred = Q.defer();
+		this.getResourceByURI("/product_categories", search_params).then(
+			function (data) {
+				var product_categories = [];
+				for (var i in data) {
+					product_categories.push(new ProductCategory(data[i]));
+				}
+				deferred.resolve(product_categories);
 			},
 			function (error) {
 				logger.error(error.toString());
