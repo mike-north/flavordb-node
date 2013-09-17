@@ -42,11 +42,9 @@
 
 		function getOAuthAccessToken () {
 			var deferred = Q.defer();
-			
-
 
 			if(api_key == null || api_secret == null) {
-				deferred.reject(new Error("API Credentials are missing!\n\t" + API_KEY));
+				deferred.reject(new Error("API Credentials are missing!\n\t");
 			}
 			
 			if (false) {

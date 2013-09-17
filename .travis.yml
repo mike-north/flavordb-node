@@ -5,6 +5,6 @@ node_js:
 - '0.8'
 - '0.6'
 env:
-  matrix:
-  - secure: gXNZa645VKuxHAVCTxUIvLsPsLkRtEwKvlfaUYZf5owqNKWf5M5cOsZC4FDImn3Da1bwal7Hoxe+go+ed6EuUVY/K/mcBxieeQVeAT5IvM0kCZ10g5n4AF4zM2IJIWHVIyJoN3ExOjkbrJr8EeBgE4Wue1oDOK1NlBDz8Hu9n44=
-  - secure: RGYpAW2tvzsbrHhEFm+focI6vzcKjO9d4/lbn/1JNURwYYthxTFM2OgFBYGFoyokYoIFskJjJdnRujehZHm+XluULf08iOgQAfD6euZA/23pS7jh9bZIkVMrKzm1Or7JmrHlbWP8JyMbNPs7WQzicVgTnvaFRy9ZEm0D3MQ+aZg=
+  global:
+  - secure: LmEVfLdKCdPbtA4xObeZgw4pM8Gl+Gdrr86NDyh7KxTyVW/zpbuf9uN0xzZw0eaN2FcK8k1Hl38HPCfIVMDLEzgAvTdOTQozRpE6NrIrxVw7+y+YkXKMoHAEHGuZsJNTZzx4SEc77Cx+pIzsU979MWIk1ZptGnvGog9Z/YEtMpg=
+  - secure: JwwG2zBiW9Y/SnD5t1mIAdTJHyejQL63HISl/NwElkiN4rhd4Rcuur0dydEX3WPo+p6/VVA7W3+Fo8EH7DvGPk7Z5bKCdQahI+FydKET/jURM41ec3XbPMjm7gXZywCdyLHN68teO0cvVYGbh9SEmKEIgElPSsZU7FxxG77oXec=
