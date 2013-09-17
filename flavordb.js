@@ -27,13 +27,26 @@
 	    ]
 	});
 	
-	function FlavordbClient () {
+	function FlavordbClient (opts) {
+
+		var options = opts || {};
 		this.api_token = null;
+
+
+		this.api_key = options.api_key || API_KEY;
+		this.api_secret = options.api_secret || API_SECRET;
+
+		logger.warn("API Credentials Found", {
+			key: this.api_key.substring(0, 20) + '...',
+			secret: this.api_secret.substring(0, 20) + '...'
+		});
 
 		this.getOAuthAccessToken = function () {
 			var deferred = Q.defer();
 			
-			if(API_KEY == null || API_SECRET == null) {
+
+
+			if(this.api_key == null || this.api_secret == null) {
 				deferred.reject(new Error("API Credentials are missing!\n\t" + API_KEY));
 			}
 			
@@ -44,8 +57,8 @@
 				logger.info("Getting OAuth Token...");
 				restler.post(OAUTH_URL, {
 					data: {
-						client_id: API_KEY,
-						client_secret: API_SECRET,
+						client_id: this.api_key,
+						client_secret: this.api_secret,
 						grant_type: 'client_credentials'
 					}
 				}).once("complete", function (data, response) {
