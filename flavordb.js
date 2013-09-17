@@ -31,6 +31,9 @@
 		this.api_token = null;
 
 		this.getOAuthAccessToken = function () {
+			if(API_KEY == null || API_SECRET == null) {
+				throw new APIError("API Credentials are missing!\n\t" + API_KEY)
+			}
 			var deferred = Q.defer();
 			
 			if (false) {
