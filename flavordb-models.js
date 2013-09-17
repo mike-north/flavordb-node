@@ -39,11 +39,13 @@
 		}
 	});
 
+	// var product_object
 	var Product = BaseObject.extend({
 		construct: function (data) {
 			arguments.callee.$.construct.call(this, data);
 		}
 	});
+
 
 	var ProductCategory = BaseObject.extend({
 		construct: function (data) {

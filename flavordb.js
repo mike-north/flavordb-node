@@ -36,8 +36,8 @@
 		var api_secret = options.api_secret || process.env['FLAVORDB_API_SECRET'];
 
 		logger.warn("API Credentials Found", {
-			key: api_key.substring(0, 20) + '...',
-			secret: api_secret.substring(0, 20) + '...'
+			key: api_key ? (api_key.substring(0, 20) + '...') : '--NO VALUE-',
+			secret: api_secret ? (api_secret.substring(0, 20) + '...') : '--NO VALUE-'
 		});
 
 		function getOAuthAccessToken () {
