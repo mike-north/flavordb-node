@@ -1,7 +1,6 @@
-(function() {
-	
-	var U = require("underscore");
+(function () {
 
+	var _ = require("underscore");
 
 	function Class() { }
 	
@@ -35,32 +34,10 @@
 
 	var BaseObject = Class.extend({
 		construct: function (data) {
-			U.extend(this, data);	
+			_.extend(this, data);	
 		}
 	});
 
-	// var product_object
-	var Product = BaseObject.extend({
-		construct: function (data) {
-			arguments.callee.$.construct.call(this, data);
-		}
-	});
+	exports.BaseObject = BaseObject;
 
-
-	var ProductCategory = BaseObject.extend({
-		construct: function (data) {
-			arguments.callee.$.construct.call(this, data);	
-		}
-	});
-
-	var Business = BaseObject.extend({
-		construct: function (data) {
-			arguments.callee.$.construct.call(this, data);	
-		}
-	});
-	
-
-	exports.Business = Business;
-	exports.ProductCategory = ProductCategory;
-	exports.Product = Product;
 }());

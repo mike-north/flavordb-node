@@ -46,7 +46,7 @@
 				deferred.reject(new Error("API Credentials are missing!\n\t"));
 			}
 			
-			if (false) {
+			if (api_token) {
 				deferred.resolve(api_token);
 			}
 			else {
@@ -82,10 +82,11 @@
 
 			getOAuthAccessToken().then(
 				function (token) {
-					logger.info("GET", {url: resourceUrl});
+					var url_params = U.extend({ access_token: token}, search_args);
+					logger.info("GET", {url: resourceUrl, params: url_params});
 					restler.get(resourceUrl, {
 					
-						data: U.extend({ access_token: token}, search_args)
+						data: url_params
 					
 					}).once("complete", function (api_data, response) {
 						deferred.resolve(api_data.data);
@@ -105,10 +106,11 @@
 	FlavordbClient.prototype = new Object;
 
 	FlavordbClient.prototype.getProductCategoryById = function (id) {
-		var deferred = Q.defer();
+		var deferred = Q.defer(),
+			client = this;
 		this.getResourceByURI("/product_categories/" + id).then(
 			function (data) {
-				var product_category = ProductCategory.getOrCreate(data, this);
+				var product_category = ProductCategory.getOrCreate(data, client);
 				deferred.resolve(product_category);
 			},
 			function (error) {
@@ -119,10 +121,11 @@
 	};
 
 	FlavordbClient.prototype.getProductById = function (id) {
-		var deferred = Q.defer();
+		var deferred = Q.defer(),
+			client = this;
 		this.getResourceByURI("/products/" + id).then(
 			function (data) {
-				var product = Product.getOrCreate(data, this);
+				var product = Product.getOrCreate(data, client);
 				deferred.resolve(product);
 			},
 			function (error) {
@@ -133,10 +136,12 @@
 	};
 
 	FlavordbClient.prototype.getBusinessById = function (id) {
-		var deferred = Q.defer();
+		var deferred = Q.defer(),
+			client = this;
+
 		this.getResourceByURI("/businesses/" + id).then(
 			function (data) {
-				var business = Business.getOrCreate(data, this);
+				var business = Business.getOrCreate(data, client);
 				deferred.resolve(business);
 			},
 			function (error) {
@@ -147,12 +152,13 @@
 	};
 
 	FlavordbClient.prototype.findBusinesses = function (search_params) {
-		var deferred = Q.defer();
+		var deferred = Q.defer(),
+			client = this;
 		this.getResourceByURI("/businesses", search_params).then(
 			function (data) {
 				var businesses = [];
 				for (var i in data) {
-					businesses.push(Business.getOrCreate(data[i], this));
+					businesses.push(Business.getOrCreate(data[i], client));
 				}
 				deferred.resolve(businesses);
 			},
@@ -164,12 +170,13 @@
 	};
 
 	FlavordbClient.prototype.findProducts = function (search_params) {
-		var deferred = Q.defer();
+		var deferred = Q.defer(),
+			client = this;
 		this.getResourceByURI("/products", search_params).then(
 			function (data) {
 				var products = [];
 				for (var i in data) {
-					products.push(Product.getOrCreate(data[i], this));
+					products.push(Product.getOrCreate(data[i], client));
 				}
 				deferred.resolve(products);
 			},
@@ -181,12 +188,13 @@
 	};
 
 	FlavordbClient.prototype.findProductCategories = function (search_params) {
-		var deferred = Q.defer();
+		var deferred = Q.defer(),
+			client = this;
 		this.getResourceByURI("/product_categories", search_params).then(
 			function (data) {
 				var product_categories = [];
 				for (var i in data) {
-					product_categories.push(ProductCategory.getOrCreate(data[i], this));
+					product_categories.push(ProductCategory.getOrCreate(data[i], client));
 				}
 				deferred.resolve(product_categories);
 			},

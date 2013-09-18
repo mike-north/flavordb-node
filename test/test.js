@@ -1,10 +1,9 @@
 var assert = require("assert"),
-	fdb_models =	require("../flavordb-models"),
-	Flavordb = require("../flavordb").Flavordb;
+	Flavordb = require("../src/flavordb").Flavordb;
 
-var Product = fdb_models.Product,
-	Business = fdb_models.Business,
-	ProductCategory = fdb_models.ProductCategory;
+var Product =		require("../src/product").Product,
+	Business = 		require("../src/business").Business,
+	ProductCategory=require("../src/product_category").ProductCategory;
 
 var fdb = new Flavordb();
 

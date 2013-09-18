@@ -2,7 +2,7 @@
   "name": "flavordb",
   "version": "0.0.1",
   "description": "A NodeJS client for the FlavorDB API",
-  "main": "flavordb.js",
+  "main": "src/flavordb.js",
   "directories": {
     "test": "tests"
   },
@@ -13,6 +13,7 @@
     "winston": ""
   },
   "devDependencies": {
+    "should": "",
   	"jake": "~0.6.12",
     "mocha": "~1.13.0",
     "yuicompressor": "~2.4.8"
