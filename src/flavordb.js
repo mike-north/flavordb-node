@@ -2,7 +2,9 @@
 
 	"use strict";
 
-	var restler = 		require("restler"),
+	var http = 			require("http"),
+		url = 			require("url"),
+		querystring =	require("querystring"),
 		Q = 			require("q"),
 		U = 			require("underscore"),
 		winston = 		require("winston"),
@@ -15,7 +17,7 @@
 	var InvalidAPICredentialsError = fdb_errors.InvalidAPICredentialsError,
 		APIError = fdb_errors.APIError;
 
-	var OAUTH_URL = "http://www.flavordb.com/oauth/token",
+	var OAUTH_PATH = "/oauth/token",
 		API_ENDPOINT = "http://api.flavordb.com/api/v1";
 
 	var logger = new (winston.Logger)({
@@ -51,24 +53,49 @@
 			}
 			else {
 				logger.info("Getting OAuth Token...");
-				restler.post(OAUTH_URL, {
-					data: {
-						client_id: api_key,
-						client_secret: api_secret,
-						grant_type: 'client_credentials'
-					}
-				}).once("complete", function (data, response) {
-					if (data['error']) {
-						deferred.reject(new InvalidAPICredentialsError(data['error_description']));
-					}
-					else {
-						api_token = data['access_token'];
-						logger.info("received API token \t" + api_token);
-						deferred.resolve(api_token);	
-					}
-				}).once("fail", function (data, response) {
-					deferred.reject(new Error("Failed to get OAuth token"));
+
+				var oauth_param_data = querystring.stringify({
+					client_id: api_key,
+					client_secret: api_secret,
+					grant_type: 'client_credentials'
 				});
+				
+				var oauth_token_request = http.request({
+					hostname: 'www.flavordb.com',
+					port: 80,
+					path: OAUTH_PATH,
+					method: 'POST'
+				}, function(res) {
+					res.setEncoding('utf8');
+					
+					var server_response_data = '';
+					
+					res.on('data', function (chunk) {
+						server_response_data += chunk;
+					});
+					
+					res.on('end', function () {
+						var data = JSON.parse(server_response_data);
+						if (data['error']) {
+							deferred.reject(new InvalidAPICredentialsError(data['error_description']));
+						}
+						else {
+							api_token = data['access_token'];
+							logger.info("received API token \t" + api_token);
+							deferred.resolve(api_token);	
+						}	
+					});
+				});
+
+				oauth_token_request.on('error', function(e) {
+					deferred.reject(new InvalidAPICredentialsError('problem with request: ' + e.message));
+				});
+
+				// write data to request body
+				oauth_token_request.write(oauth_param_data);
+
+				oauth_token_request.end()
+
 			}
 			return deferred.promise;	
 		};
@@ -82,17 +109,29 @@
 
 			getOAuthAccessToken().then(
 				function (token) {
-					var url_params = U.extend({ access_token: token}, search_args);
+					var url_params = search_args;
+					
 					logger.info("GET", {url: resourceUrl, params: url_params});
-					restler.get(resourceUrl, {
-					
-						data: url_params
-					
-					}).once("complete", function (api_data, response) {
-						deferred.resolve(api_data.data);
-					}).once("fail", function (api_data, response) {
+
+					var url_as_hash = url.parse(resourceUrl);
+					url_as_hash.headers = {
+						'Authorization': "Bearer " + token
+					};
+					url_as_hash.query = url_params;
+										
+					http.get(url_as_hash, function (res) {
+						var server_response_data = '';
+						res.on('data', function (chunk) {
+							server_response_data += chunk;
+						});
+						res.on('end', function () {
+							var api_data = JSON.parse(server_response_data);
+							deferred.resolve(api_data.data);
+						});
+					}).on('error', function (e) {
 						deferred.reject(new APIError("Couldn't retrieve object at url '" + resourceUrl + "'"));
 					});
+					
 				},
 				function (error) {
 					deferred.reject(error);

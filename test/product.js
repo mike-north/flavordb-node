@@ -65,9 +65,9 @@ describe('Flavordb Product', function () {
 
 					product.getProductCategory().then(
 						function (product_category) {
-							if (product_category && product_category.id === product.productCategoryId) {
-								done();
-							}
+							should.exist(product_category);
+							product_category.id.should.eql(product.productCategoryId);
+							done();
 						}
 					);	
 				}
