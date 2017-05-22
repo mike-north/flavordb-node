@@ -2,4 +2,6 @@
 flavordb-node
 =============
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/mike-north/flavordb-node.svg)](https://greenkeeper.io/)
+
 A NodeJS wrapper for the FlavorDB API
